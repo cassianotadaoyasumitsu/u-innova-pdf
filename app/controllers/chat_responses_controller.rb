@@ -4,6 +4,8 @@ class ChatResponsesController < ApplicationController
   before_action :set_document
   before_action :authorize_document
 
+  MAX_CONTEXT_LENGTH = 8000 # Ajustado para o GPT-4
+
   def show
     response.headers['Content-Type']  = 'text/event-stream'
     response.headers['Last-Modified'] = Time.now.httpdate
@@ -11,6 +13,7 @@ class ChatResponsesController < ApplicationController
     
     # Log API key presence (but not the key itself)
     Rails.logger.info "OpenAI API key present: #{ENV['OPENAI_ACCESS_TOKEN'].present?}"
+    Rails.logger.info "Document content length: #{@document.content&.length || 0}"
     
     client = OpenAI::Client.new(access_token: ENV["OPENAI_ACCESS_TOKEN"])
 
@@ -24,18 +27,33 @@ class ChatResponsesController < ApplicationController
 
     begin
       assistant_response = ""
-      Rails.logger.info "Starting OpenAI API call with model: gpt-3.5-turbo"
+      Rails.logger.info "Starting OpenAI API call with model: gpt-4"
+      
+      # Prepare the context from the document content
+      context = @document.content.presence || "No content available in the document."
+      
+      # Limitar o tamanho do contexto
+      if context.length > MAX_CONTEXT_LENGTH
+        Rails.logger.info "Context too long, truncating to #{MAX_CONTEXT_LENGTH} characters"
+        context = context[0..MAX_CONTEXT_LENGTH] + "..."
+      end
+      
+      Rails.logger.info "Final context length: #{context.length}"
+      
+      # Log the messages being sent to OpenAI
+      messages = [
+        { 
+          role: "system", 
+          content: "You are a helpful assistant that answers questions about the provided PDF document. Use the following context to answer questions: #{context}" 
+        },
+        { role: "user", content: params[:prompt] }
+      ]
+      Rails.logger.info "Messages being sent to OpenAI: #{messages.inspect}"
       
       client.chat(
         parameters: {
-          model:    "gpt-3.5-turbo",
-          messages: [
-            { 
-              role: "system", 
-              content: "You are a helpful assistant that answers questions about the provided PDF document. Use the following context to answer questions: #{@document.content}" 
-            },
-            { role: "user", content: params[:prompt] }
-          ],
+          model:    "gpt-4",
+          messages: messages,
           stream:   proc do |chunk|
             content = chunk.dig("choices", 0, "delta", "content")
             next if content.nil?
