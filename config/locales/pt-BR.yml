@@ -20,4 +20,18 @@ pt-BR:
         taken: "já está em uso"
         blank: "não pode ficar em branco"
       password:
-        blank: "não pode ficar em branco" 
+        blank: "não pode ficar em branco"
+  datetime:
+    distance_in_words:
+      about_x_hours: "cerca de %{count} horas"
+      about_x_months: "cerca de %{count} meses"
+      about_x_years: "cerca de %{count} anos"
+      almost_x_years: "quase %{count} anos"
+      half_a_minute: "meio minuto"
+      less_than_x_minutes: "menos de %{count} minutos"
+      less_than_x_seconds: "menos de %{count} segundos"
+      over_x_years: "mais de %{count} anos"
+      x_days: "%{count} dias"
+      x_minutes: "%{count} minutos"
+      x_months: "%{count} meses"
+      x_seconds: "%{count} segundos" 
