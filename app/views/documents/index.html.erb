@@ -1,0 +1,30 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Meus Documentos</h1>
+    <%= link_to 'Enviar Novo Documento', new_document_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+  </div>
+
+  <% if @documents.any? %>
+    <div class="grid gap-4">
+      <% @documents.each do |document| %>
+        <div class="bg-white shadow rounded-lg p-4">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="text-xl font-semibold text-gray-800"><%= document.title %></h2>
+              <p class="text-sm text-gray-600">Enviado há <%= time_ago_in_words(document.created_at) %></p>
+            </div>
+            <div class="flex space-x-2">
+              <%= link_to 'Visualizar', document_path(document), class: "text-blue-500 hover:text-blue-700" %>
+              <%= button_to 'Excluir', document_path(document), method: :delete, class: "text-red-500 hover:text-red-700", data: { confirm: 'Tem certeza?' } %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="text-center py-8">
+      <p class="text-gray-600">Você ainda não enviou nenhum documento.</p>
+      <%= link_to 'Envie seu primeiro documento', new_document_path, class: "text-blue-500 hover:text-blue-700" %>
+    </div>
+  <% end %>
+</div> 

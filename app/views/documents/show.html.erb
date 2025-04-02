@@ -1,0 +1,72 @@
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div class="px-4 py-5 sm:px-6">
+      <div class="flex justify-between items-center">
+        <h3 class="text-lg leading-6 font-medium text-gray-900">
+          <%= @document.title %>
+        </h3>
+        <div class="flex space-x-3">
+          <%= link_to "Voltar para Documentos", documents_path, class: "inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" %>
+          <%= button_to "Excluir Documento", document_path(@document), method: :delete, class: "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500", data: { confirm: "Tem certeza?" } %>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-200">
+      <div class="px-4 py-5 sm:p-6">
+        <div class="space-y-6">
+          <!-- PDF Preview -->
+          <div class="bg-gray-50 rounded-lg p-4">
+            <h4 class="text-sm font-medium text-gray-900 mb-2">Visualização do PDF</h4>
+            <% if @document.pdf_file.attached? %>
+              <div class="aspect-w-16 aspect-h-9 bg-white rounded-lg shadow">
+                <iframe src="<%= rails_blob_path(@document.pdf_file, disposition: "inline") %>" class="w-full h-96"></iframe>
+              </div>
+            <% else %>
+              <p class="text-sm text-gray-500">Nenhum arquivo PDF anexado</p>
+            <% end %>
+          </div>
+
+          <!-- Chat Interface -->
+          <div class="bg-white rounded-lg shadow" data-controller="chat" data-chat-document-id-value="<%= @document.id %>">
+            <div class="px-4 py-5 sm:p-6">
+              <h4 class="text-sm font-medium text-gray-900 mb-4">Chat com Assistente IA</h4>
+              
+              <!-- Chat Messages -->
+              <div class="space-y-4 mb-6 h-[400px] overflow-y-auto" data-chat-target="messages">
+                <% @chat_messages.each do |message| %>
+                  <div class="flex <%= message.role == 'user' ? 'justify-end' : 'justify-start' %>">
+                    <div class="<%= message.role == 'user' ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800' %> rounded-lg px-4 py-2 max-w-lg">
+                      <p class="text-sm whitespace-pre-wrap"><%= message.content %></p>
+                      <p class="text-xs mt-1 text-gray-500">
+                        <%= message.created_at.strftime("%d de %B de %Y às %H:%M") %>
+                      </p>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+
+              <!-- Chat Form -->
+              <div class="mt-4">
+                <div class="flex space-x-3">
+                  <textarea 
+                    data-chat-target="input"
+                    rows="3" 
+                    class="shadow-sm block w-full px-4 py-3 focus:ring-blue-500 focus:border-blue-500 sm:text-sm border border-gray-300 rounded-md resize-none" 
+                    placeholder="Faça uma pergunta sobre este documento..."
+                    data-action="keydown->chat#handleKeydown"
+                  ></textarea>
+                  <button 
+                    data-chat-target="button"
+                    data-action="click->chat#sendMessage"
+                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >Enviar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
