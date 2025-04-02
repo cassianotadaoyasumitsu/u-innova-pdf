@@ -34,11 +34,11 @@
             </div>
             <div class="flex items-center">
               <% if user_signed_in? %>
-                <span class="text-gray-700 mr-4">Hello, <%= current_user.email %></span>
-                <%= button_to "Sign out", destroy_user_session_path, method: :delete, class: "bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium" %>
+                <span class="text-gray-700 mr-4">Olá, <%= current_user.email %></span>
+                <%= button_to "Sair", destroy_user_session_path, method: :delete, class: "bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium" %>
               <% else %>
-                <%= link_to "Sign in", new_user_session_path, class: "text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium" %>
-                <%= link_to "Sign up", new_user_registration_path, class: "ml-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium" %>
+                <%= link_to "Entrar", new_user_session_path, class: "text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium" %>
+                <%= link_to "Cadastrar", new_user_registration_path, class: "ml-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium" %>
               <% end %>
             </div>
           </div>

@@ -1,0 +1,23 @@
+pt-BR:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              taken: "já está em uso"
+              blank: "não pode ficar em branco"
+            password:
+              blank: "não pode ficar em branco"
+      messages:
+        taken: "já está em uso"
+        blank: "não pode ficar em branco"
+  errors:
+    messages:
+      blank: "não pode ficar em branco"
+    attributes:
+      email:
+        taken: "já está em uso"
+        blank: "não pode ficar em branco"
+      password:
+        blank: "não pode ficar em branco" 
