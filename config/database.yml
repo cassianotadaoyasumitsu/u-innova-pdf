@@ -81,6 +81,7 @@ test:
 production:
   primary: &primary_production
     <<: *default
+    url: <%= ENV['DATABASE_URL'] %>
     database: u_innova_pdf_production
     username: u_innova_pdf
     password: <%= ENV["U_INNOVA_PDF_DATABASE_PASSWORD"] %>
