@@ -51,6 +51,7 @@ export default class extends Controller {
     }
     this.buttonTarget.disabled = false
     this.inputTarget.disabled = false
+    this.inputTarget.focus()
     this.currentAssistantMessage = null
   }
 
