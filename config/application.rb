@@ -21,7 +21,7 @@ module UInnovaPdf
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
-    config.time_zone = Time.zone.name
+    config.time_zone = ENV['TZ'] || 'UTC'
     # config.eager_load_paths << Rails.root.join("extras")
 
     # Set the default locale to Brazilian Portuguese
