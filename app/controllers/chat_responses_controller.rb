@@ -8,7 +8,11 @@ class ChatResponsesController < ApplicationController
     response.headers['Content-Type']  = 'text/event-stream'
     response.headers['Last-Modified'] = Time.now.httpdate
     sse                               = SSE.new(response.stream, event: "message")
-    client                            = OpenAI::Client.new(access_token: ENV["OPENAI_ACCESS_TOKEN"])
+    
+    # Log API key presence (but not the key itself)
+    Rails.logger.info "OpenAI API key present: #{ENV['OPENAI_ACCESS_TOKEN'].present?}"
+    
+    client = OpenAI::Client.new(access_token: ENV["OPENAI_ACCESS_TOKEN"])
 
     # Save user message
     user_message = @document.chat_messages.create!(
@@ -20,6 +24,8 @@ class ChatResponsesController < ApplicationController
 
     begin
       assistant_response = ""
+      Rails.logger.info "Starting OpenAI API call with model: gpt-3.5-turbo"
+      
       client.chat(
         parameters: {
           model:    "gpt-3.5-turbo",
@@ -55,8 +61,14 @@ class ChatResponsesController < ApplicationController
       else
         Rails.logger.warn "No assistant response to save"
       end
+    rescue OpenAI::Error => e
+      Rails.logger.error "OpenAI API Error: #{e.message}"
+      Rails.logger.error "Error type: #{e.class}"
+      Rails.logger.error e.backtrace.join("\n")
+      sse.write({ message: "Error: #{e.message}" })
     rescue => e
       Rails.logger.error "Chat response error: #{e.message}"
+      Rails.logger.error "Error type: #{e.class}"
       Rails.logger.error e.backtrace.join("\n")
       sse.write({ message: "Error: #{e.message}" })
     ensure
