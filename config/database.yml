@@ -79,20 +79,6 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  primary: &primary_production
-    <<: *default
-    database: u_innova_pdf_production
-    username: u_innova_pdf
-    password: <%= ENV["U_INNOVA_PDF_DATABASE_PASSWORD"] %>
-  cache:
-    <<: *primary_production
-    database: u_innova_pdf_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: u_innova_pdf_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: u_innova_pdf_production_cable
-    migrations_paths: db/cable_migrate
+  <<: *default
+  url: <%= ENV["DATABASE_URL"] %>
+
